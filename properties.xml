@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+      <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Configuration file for EntryUpdater</comment>
+    <!-- ARS server login settings -->
+    <entry key="ars.server.test">192.168.1.136</entry>
+    <entry key="ars.server.prod">prodserver</entry>
+    <entry key="ars.environment">test</entry><!-- must match one of the above
+      suffixes -->
+    <entry key="ars.port">5500</entry>
+    <entry key="ars.user">jss</entry>
+    <entry key="ars.password">sommer</entry>
+     
+    <!-- Script Settings -->
+    <entry key="maxRetreive">50000</entry> <!-- Default: 50000-->
+     
+    <!-- Script Control-->
+    <entry key="onlySELECT">false</entry><!-- does not delete/insert/update if
+      this value is set to true -->
+     
+</properties>

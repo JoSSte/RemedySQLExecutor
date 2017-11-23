@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    This is a sample configuration file for AR System Java API.
+    The values of the API configuration parameters in this sample are
+    the default values. To override the default values, copy or rename
+    this file to arsys_api.xml and change the configuration parameter
+    values you want to override. You can remove or comment out the
+    configuration parameters that you do not want to override and keep
+    the default values.
+
+    Configuration parameters:
+
+    catalogFile: Base filename of XML message catalog.
+        Do not include the file extension or the language code.
+        Default value: arcatalog
+
+    maxProxiesPerServer: Maximum number of proxy connections per server
+        Valid values:   5, 10, 20
+        Default value:  10
+
+    connectionMaxRetries
+        Valid values:   0, 1, 2
+        Default value:  0
+
+    timeLagBetweenRetriesMillSec
+        Valid values:   1000, 2000 (in milliseconds)
+        Default value:  1000
+
+    toStringStyle - any static ToStringStyle member of a custom class
+    accessible to the current process.
+        Valid values:
+org.apache.commons.lang.builder.ToStringStyle.DEFAULT_STYLE
+
+org.apache.commons.lang.builder.ToStringStyle.MULTI_LINE_STYLE
+
+org.apache.commons.lang.builder.ToStringStyle.NO_FIELD_NAMES_STYLE
+
+org.apache.commons.lang.builder.ToStringStyle.SHORT_PREFIX_STYLE
+
+org.apache.commons.lang.builder.ToStringStyle.SIMPLE_STYLE
+
+com.bmc.arsys.api.NoPrefixToStringStyle.NO_PREFIX_STYLE
+        Default value:
+ com.bmc.arsys.api.NoPrefixToStringStyle.NO_PREFIX_STYLE
+
+    stringizeFieldAssignments - Controls whether the FieldAssignInfo class
+    assignment members are stringized for easier access.
+        Valid values:   true, false
+        Default value:  false
+
+    stringizeSetIfQualification - Controls whether the SetFieldsFromForm
+    action set-if-qualification member is stringized for easier access.
+        Valid values:   true, false
+        Default value:  false
+
+        apiRecording - Turns on the client side api logging and produces a
+command file(<username><servername><port>_arapicmd.log)
+                                   and a result output
+file(<username><servername><port>_arapires.log). The value is
+                                   a bit mask to allow for combination of
+features to be blended. e.g In order to have
+                                   append mode for the log files and record
+only elapsed time and no result data, the value
+                                   should be set to 2+8+32 = 42.
+        Valid values:     0 No Logging
+                          1 Logging ON
+                          2 Record in append mode in the files.
+                          4 Record start and finish Time
+                          8 Record Elapsed Time in ms
+                          16 Combine the command and result files into the
+result file
+                          32 Do not record result data output
+                          64 Buffer the file output
+        Default value  :  0
+
+    jniLoadMode - Parameter to control JNI library loading.
+        Valid values:     0 JNI library will never be loaded
+                          1 JNI library will be loaded only when required
+                          2 JNI library will always be loaded
+        Default value  :  1
+-->
+<javaapi_config>
+    <catalogFile>arcatalog</catalogFile>
+    <maxProxiesPerServer>10</maxProxiesPerServer>
+    <connectionMaxRetries>0</connectionMaxRetries>
+    <timeLagBetweenRetriesMillSec>1000</timeLagBetweenRetriesMillSec>
+
+    <toStringStyle>com.bmc.arsys.api.NoPrefixToStringStyle.NO_PREFIX_STYLE</toStringStyle>
+    <stringizeFieldAssignments>false</stringizeFieldAssignments>
+    <stringizeSetIfQualification>false</stringizeSetIfQualification>
+    <apiRecording>19</apiRecording>
+    <jniLoadMode>1</jniLoadMode>
+</javaapi_config>
