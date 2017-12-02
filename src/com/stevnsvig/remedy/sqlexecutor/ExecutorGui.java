@@ -51,17 +51,17 @@ public class ExecutorGui extends javax.swing.JFrame {
         txtPaneSysLog.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                startBlink();
+                //startBlink();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                startBlink();
+                //startBlink();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                startBlink();
+                //startBlink();
             }
         });
         //set username and Servername
@@ -70,16 +70,6 @@ public class ExecutorGui extends javax.swing.JFrame {
 
     }
 
-    private void blink(boolean blinkFlag) {
-        if (blinkFlag) {
-            mainPane.setForegroundAt(1, Color.red);
-            mainPane.setBackgroundAt(1, Color.orange);
-        } else {
-            mainPane.setForegroundAt(1, mainPane.getForegroundAt(2));
-            mainPane.setBackgroundAt(1, mainPane.getBackgroundAt(2));
-        }
-        mainPane.repaint();
-    }
 
     /**
      * Get image for Icon
@@ -92,73 +82,9 @@ public class ExecutorGui extends javax.swing.JFrame {
         this.setIconImage(kit.createImage(url));
     }
 
-    /**
-     * Update the table
-     *
-     * @param contents
-     * @param headers
-     */
-    private void updateTable(ArrayList<ArrayList<String>> contents, String[] headers) {
-        DefaultTableModel model = (DefaultTableModel) tblResult.getModel();
-        int rows = model.getRowCount();
-        for (int i = rows - 1; i >= 0; i--) {
-            model.removeRow(i);
-        }
-        System.out.println("headers: " + Arrays.toString(headers));
-        model.setColumnCount(0);
-        for (ArrayList<String> row : contents) {
-            if (model.getColumnCount() == 0) {//if first row, set column count
-                System.out.println("cols: " + row.size());
-                //model.setColumnCount(row.size());
-                for (String header : headers) {
-                    model.addColumn(header);
-                }
-            }
-            model.addRow(row.toArray());
-        }
-    }
+    
 
-    /**
-     * Gets columns from the SQL query
-     *
-     * @param queryString
-     * @return
-     */
-    private String[] getColumns(String queryString) {
-        String[] returnString = {};
-
-        int selectIndex = queryString.toUpperCase().indexOf("SELECT") + 6;
-        int fromIndex = queryString.toUpperCase().indexOf("FROM") - 1;
-        String colList = queryString.substring(selectIndex, fromIndex);
-        if (colList.contains("*")) {
-            System.err.println("[getColumns]\tNo columns defined. * used.");
-
-            String tblList = queryString.substring(fromIndex + 5);
-            if (queryString.contains("WHERE")) {
-                tblList = queryString.substring(fromIndex + 5, queryString.indexOf("WHERE") - 1);
-            }
-            if (!tblList.contains(",")) {
-                tblList = tblList.replaceAll("\\s", "");
-                try {
-                    ArrayList<ArrayList<String>> sqlResult = se.executeSQL("SELECT column_name FROM user_tab_cols WHERE table_name = '" + tblList + "'");
-                    ArrayList<String> colll = new ArrayList<>();
-                    for (ArrayList<String> next : sqlResult) {
-                        colll.add(next.get(0));
-                    }
-                    returnString = colll.toArray(new String[0]);
-                } catch (ARException ex) {
-                    System.err.println("[getColumns]\tError fetching Columns for result: " + ex.getMessage());
-                }
-            } else {
-                System.err.println("[getColumns]\tSeveral tables. Not attempting to get field list");
-            }
-
-        } else {
-            returnString = colList.split(",");
-        }
-
-        return returnString;
-    }
+    
 
     /**
      * This method is called from within the constructor to initialise the form.
@@ -169,6 +95,12 @@ public class ExecutorGui extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        scrollResult = new javax.swing.JScrollPane();
+        tblResult = new javax.swing.JTable();
+        statusPanel = new javax.swing.JPanel();
+        serverNameLabel = new javax.swing.JLabel();
+        userNameLabel = new javax.swing.JLabel();
+        jSplitPane1 = new javax.swing.JSplitPane();
         mainPane = new javax.swing.JTabbedPane();
         queryScrollPane = new javax.swing.JScrollPane();
         txtQuery = new javax.swing.JTextPane();
@@ -176,18 +108,54 @@ public class ExecutorGui extends javax.swing.JFrame {
         txtPaneSysLog = new javax.swing.JTextPane();
         queryLogScrollPane = new javax.swing.JScrollPane();
         txtQueryLog = new javax.swing.JTextArea();
-        scrollResult = new javax.swing.JScrollPane();
-        tblResult = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
         btnExecute = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
-        statusPanel = new javax.swing.JPanel();
-        serverNameLabel = new javax.swing.JLabel();
-        userNameLabel = new javax.swing.JLabel();
         btnSettings = new javax.swing.JButton();
         btnExport = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SQL Executor");
+
+        tblResult.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        scrollResult.setViewportView(tblResult);
+
+        statusPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+
+        serverNameLabel.setText("ServerName: ");
+
+        userNameLabel.setText("UserName");
+
+        javax.swing.GroupLayout statusPanelLayout = new javax.swing.GroupLayout(statusPanel);
+        statusPanel.setLayout(statusPanelLayout);
+        statusPanelLayout.setHorizontalGroup(
+            statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(statusPanelLayout.createSequentialGroup()
+                .addComponent(serverNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 580, Short.MAX_VALUE)
+                .addComponent(userNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        statusPanelLayout.setVerticalGroup(
+            statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(serverNameLabel)
+                    .addComponent(userNameLabel)))
+        );
+
+        jSplitPane1.setDividerLocation(750);
+        jSplitPane1.setResizeWeight(1.0);
 
         mainPane.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -227,18 +195,9 @@ public class ExecutorGui extends javax.swing.JFrame {
 
         mainPane.addTab("QueryLog", queryLogScrollPane);
 
-        tblResult.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        scrollResult.setViewportView(tblResult);
+        jSplitPane1.setLeftComponent(mainPane);
+
+        jPanel1.setMaximumSize(new java.awt.Dimension(150, 200));
 
         btnExecute.setText("Execute Query");
         btnExecute.addActionListener(new java.awt.event.ActionListener() {
@@ -254,57 +213,28 @@ public class ExecutorGui extends javax.swing.JFrame {
             }
         });
 
-        statusPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-
-        serverNameLabel.setText("ServerName: ");
-
-        userNameLabel.setText("UserName");
-
-        javax.swing.GroupLayout statusPanelLayout = new javax.swing.GroupLayout(statusPanel);
-        statusPanel.setLayout(statusPanelLayout);
-        statusPanelLayout.setHorizontalGroup(
-            statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(statusPanelLayout.createSequentialGroup()
-                .addComponent(serverNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 447, Short.MAX_VALUE)
-                .addComponent(userNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        statusPanelLayout.setVerticalGroup(
-            statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, statusPanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(statusPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(serverNameLabel)
-                    .addComponent(userNameLabel)))
-        );
-
         btnSettings.setText("Settings");
+        btnSettings.setEnabled(false);
 
         btnExport.setText("Export to CSV");
+        btnExport.setEnabled(false);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(scrollResult, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnExecute, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnClear, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
-                    .addComponent(btnSettings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnExport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(mainPane, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
-                    .addGap(152, 152, 152)))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(statusPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnExecute, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnExecute)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -313,16 +243,30 @@ public class ExecutorGui extends javax.swing.JFrame {
                 .addComponent(btnSettings)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnExport)
-                .addGap(64, 64, 64)
-                .addComponent(scrollResult, javax.swing.GroupLayout.DEFAULT_SIZE, 482, Short.MAX_VALUE)
+                .addContainerGap(29, Short.MAX_VALUE))
+        );
+
+        jSplitPane1.setRightComponent(jPanel1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(scrollResult, javax.swing.GroupLayout.DEFAULT_SIZE, 912, Short.MAX_VALUE)
+            .addComponent(jSplitPane1)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(statusPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrollResult, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(mainPane, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(499, Short.MAX_VALUE)))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addGap(0, 685, Short.MAX_VALUE)
+                    .addGap(0, 771, Short.MAX_VALUE)
                     .addComponent(statusPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
@@ -331,15 +275,16 @@ public class ExecutorGui extends javax.swing.JFrame {
 
     private void btnExecuteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExecuteActionPerformed
         clearBlink(null);
-        try {
-            String queryString = txtQuery.getText();
-            txtQueryLog.append(queryString + "\n");
-            ArrayList<ArrayList<String>> sqlResult = se.executeSQL(queryString);
-
-            updateTable(sqlResult, getColumns(queryString));
-        } catch (ARException arEx) {
-            System.err.println("Error fetching SQL: " + arEx.getMessage());
-        }
+        //try {
+        String queryString = txtQuery.getText();
+        txtQueryLog.append(queryString + "\n");
+        //ArrayList<ArrayList<String>> sqlResult = se.executeSQL(queryString);
+        SQLWorker sqlWorker = new SQLWorker(queryString, txtPaneSysLog, tblResult, se);
+        sqlWorker.execute();
+        //updateTable(sqlResult, getColumns(queryString));
+//        } catch (ARException arEx) {
+//            System.err.println("Error fetching SQL: " + arEx.getMessage());
+//        }
     }//GEN-LAST:event_btnExecuteActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
@@ -366,24 +311,7 @@ public class ExecutorGui extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_startBlink
 
-    /**
-     * start timer
-     *
-     * @param comp
-     */
-    private void startBlink() {
-        timer = new Timer(500, new ActionListener() {
-            boolean blinkFlag = false;
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                blink(blinkFlag);
-                blinkFlag = !blinkFlag;
-
-            }
-        });
-        timer.start();
-    }
 
     /**
      * @param args the command line arguments
@@ -417,6 +345,8 @@ public class ExecutorGui extends javax.swing.JFrame {
     private javax.swing.JButton btnExecute;
     private javax.swing.JButton btnExport;
     private javax.swing.JButton btnSettings;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JScrollPane logScrollPane;
     private javax.swing.JTabbedPane mainPane;
     private javax.swing.JScrollPane queryLogScrollPane;
