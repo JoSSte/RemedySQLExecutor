@@ -1,20 +1,17 @@
 package com.stevnsvig.remedy.sqlexecutor;
 
-import com.bmc.arsys.api.ARException;
 import java.awt.Color;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.net.URL;
-import java.sql.SQLWarning;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
 
 /**
  *
@@ -70,7 +67,6 @@ public class ExecutorGui extends javax.swing.JFrame {
 
     }
 
-
     /**
      * Get image for Icon
      *
@@ -81,10 +77,6 @@ public class ExecutorGui extends javax.swing.JFrame {
         Toolkit kit = Toolkit.getDefaultToolkit();
         this.setIconImage(kit.createImage(url));
     }
-
-    
-
-    
 
     /**
      * This method is called from within the constructor to initialise the form.
@@ -100,7 +92,10 @@ public class ExecutorGui extends javax.swing.JFrame {
         statusPanel = new javax.swing.JPanel();
         serverNameLabel = new javax.swing.JLabel();
         userNameLabel = new javax.swing.JLabel();
-        jSplitPane1 = new javax.swing.JSplitPane();
+        mainToolbar = new javax.swing.JToolBar();
+        btnExecute = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
+        btnExport = new javax.swing.JButton();
         mainPane = new javax.swing.JTabbedPane();
         queryScrollPane = new javax.swing.JScrollPane();
         txtQuery = new javax.swing.JTextPane();
@@ -108,11 +103,11 @@ public class ExecutorGui extends javax.swing.JFrame {
         txtPaneSysLog = new javax.swing.JTextPane();
         queryLogScrollPane = new javax.swing.JScrollPane();
         txtQueryLog = new javax.swing.JTextArea();
-        jPanel1 = new javax.swing.JPanel();
-        btnExecute = new javax.swing.JButton();
-        btnClear = new javax.swing.JButton();
-        btnSettings = new javax.swing.JButton();
-        btnExport = new javax.swing.JButton();
+        mainMenuBar = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        Exit = new javax.swing.JMenuItem();
+        editMenu = new javax.swing.JMenu();
+        settingsMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("SQL Executor");
@@ -154,8 +149,30 @@ public class ExecutorGui extends javax.swing.JFrame {
                     .addComponent(userNameLabel)))
         );
 
-        jSplitPane1.setDividerLocation(750);
-        jSplitPane1.setResizeWeight(1.0);
+        mainToolbar.setRollover(true);
+
+        btnExecute.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/database-run-button.png"))); // NOI18N
+        btnExecute.setText("Execute Query");
+        btnExecute.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExecuteActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(btnExecute);
+
+        btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/comment-remove-button.png"))); // NOI18N
+        btnClear.setText("Clear Query field");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(btnClear);
+
+        btnExport.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/document-run-button.png"))); // NOI18N
+        btnExport.setText("Export to CSV");
+        btnExport.setEnabled(false);
+        mainToolbar.add(btnExport);
 
         mainPane.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -195,78 +212,52 @@ public class ExecutorGui extends javax.swing.JFrame {
 
         mainPane.addTab("QueryLog", queryLogScrollPane);
 
-        jSplitPane1.setLeftComponent(mainPane);
+        fileMenu.setMnemonic('f');
+        fileMenu.setText("File");
+        fileMenu.setToolTipText("");
 
-        jPanel1.setMaximumSize(new java.awt.Dimension(150, 200));
+        Exit.setMnemonic('x');
+        Exit.setText("Exit");
+        Exit.setToolTipText("Close program (alt+F4)");
+        Exit.setEnabled(false);
+        fileMenu.add(Exit);
 
-        btnExecute.setText("Execute Query");
-        btnExecute.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExecuteActionPerformed(evt);
-            }
-        });
+        mainMenuBar.add(fileMenu);
 
-        btnClear.setText("Clear Query field");
-        btnClear.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnClearActionPerformed(evt);
-            }
-        });
+        editMenu.setMnemonic('e');
+        editMenu.setText("Edit");
 
-        btnSettings.setText("Settings");
-        btnSettings.setEnabled(false);
+        settingsMenuItem.setMnemonic('s');
+        settingsMenuItem.setText("Settings");
+        settingsMenuItem.setToolTipText("Settings to connect to Remedy server");
+        editMenu.add(settingsMenuItem);
 
-        btnExport.setText("Export to CSV");
-        btnExport.setEnabled(false);
+        mainMenuBar.add(editMenu);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnExecute, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSettings, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnExport, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(8, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnExecute)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnClear)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSettings)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnExport)
-                .addContainerGap(29, Short.MAX_VALUE))
-        );
-
-        jSplitPane1.setRightComponent(jPanel1);
+        setJMenuBar(mainMenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(scrollResult, javax.swing.GroupLayout.DEFAULT_SIZE, 912, Short.MAX_VALUE)
-            .addComponent(jSplitPane1)
+            .addComponent(mainToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPane)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(statusPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(mainToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrollResult, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(mainPane, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scrollResult, javax.swing.GroupLayout.PREFERRED_SIZE, 551, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addGap(0, 771, Short.MAX_VALUE)
+                    .addGap(0, 760, Short.MAX_VALUE)
                     .addComponent(statusPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
@@ -289,7 +280,11 @@ public class ExecutorGui extends javax.swing.JFrame {
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
         txtQuery.setText("");
-        System.err.println("Query field cleared");
+        try {
+            txtPaneSysLog.getStyledDocument().insertString(txtPaneSysLog.getStyledDocument().getLength(), "Cleared Query Field\n", new SimpleAttributeSet());
+        } catch (BadLocationException ex) {
+            
+        }
         clearBlink(null);
     }//GEN-LAST:event_btnClearActionPerformed
 
@@ -310,8 +305,6 @@ public class ExecutorGui extends javax.swing.JFrame {
     private void startBlink(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_startBlink
         // TODO add your handling code here:
     }//GEN-LAST:event_startBlink
-
-
 
     /**
      * @param args the command line arguments
@@ -341,18 +334,21 @@ public class ExecutorGui extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem Exit;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnExecute;
     private javax.swing.JButton btnExport;
-    private javax.swing.JButton btnSettings;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JMenu editMenu;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JScrollPane logScrollPane;
+    private javax.swing.JMenuBar mainMenuBar;
     private javax.swing.JTabbedPane mainPane;
+    private javax.swing.JToolBar mainToolbar;
     private javax.swing.JScrollPane queryLogScrollPane;
     private javax.swing.JScrollPane queryScrollPane;
     private javax.swing.JScrollPane scrollResult;
     private javax.swing.JLabel serverNameLabel;
+    private javax.swing.JMenuItem settingsMenuItem;
     private javax.swing.JPanel statusPanel;
     private javax.swing.JTable tblResult;
     private javax.swing.JTextPane txtPaneSysLog;
