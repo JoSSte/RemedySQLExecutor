@@ -1,4 +1,4 @@
-#RemedySQLExecutor
+# RemedySQLExecutor
 
 SQL utility to execute SQL through your AR server's API to the backend server. 
 
