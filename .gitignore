@@ -1,4 +1,2 @@
-build/
-dist/
-RegKey.reg
-nbproject/private/
+target/
+lib/
