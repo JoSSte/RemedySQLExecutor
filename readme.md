@@ -4,6 +4,9 @@ SQL utility to execute SQL through your AR server's API to the backend server.
 
 Requires Administrator Privileges to be used.
 
+## Notes
+Note that the Remedy API is not using maven, and does not exist in the maven repository. You need to download the .jar file and put in a lib folder under your project root. See https://rrr.se/cgi/index?pg=arapi for downloads.
+
 ## Contributors
 * [Jonas Stumph Stevnsvig]( https://github.com/josste )
 
